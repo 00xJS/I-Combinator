@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I-Combinator</title>
+    <style>
+        :root {
+            --primary-blue: #007bff;
+            --hover-orange: #e67300;
+            --border-gray: #ccc;
+            --focus-shadow: rgba(0, 123, 255, 0.5);
+            --error-red: #ff0000;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--hover-orange);
+        }
+
+        .inline-fields {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .dynamic-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .dynamic-section .file-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dynamic-section label {
+            font-weight: bold;
+            margin: 0;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin: 5px 0;
+        }
+
+        input,
+        select {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid var(--border-gray);
+            border-radius: 4px;
+            max-width: 200px;
+        }
+
+        input:invalid,
+        select:invalid {
+            border-color: var(--error-red);
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 4px var(--focus-shadow);
+        }
+
+        h1,
+        h3 {
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        canvas {
+            max-width: 100%;
+            border: 1px solid var(--border-gray);
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        #downloadLink a {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        #downloadLink a:hover {
+            background-color: var(--hover-orange);
+        }
+    </style>
+</head>
+
+<body onload="updateFileInputs()">
+    <div class="container">
+        <h1>I-Combinator</h1>
+        <div class="dynamic-section">
+            <div>
+                <label for="orientation">Stitch Orientation:</label>
+                <select id="orientation">
+                    <option value="horizontal">Horizontal</option>
+                    <option value="vertical">Vertical</option>
+                </select>
+            </div>
+            <div class="inline-fields">
+                <label for="numImages">Number of Images:</label>
+                <input type="number" id="numImages" min="1" value="3">
+                <button onclick="updateFileInputs()">Set Number</button>
+            </div>
+        </div>
+        <div id="fileInputs" class="dynamic-section">
+            <!-- File inputs will be dynamically added here on load -->
+        </div>
+        <div class="form-actions">
+            <button onclick="stitchImages()">Stitch Images</button>
+        </div>
+        <div>
+            <h3>Result</h3>
+            <canvas id="resultCanvas"></canvas>
+            <div id="downloadLink" class="form-actions"></div>
+        </div>
+    </div>
+
+    <script>
+        function updateFileInputs() {
+            const numImages = parseInt(document.getElementById('numImages').value);
+            if (numImages < 1) {
+                alert('Please enter a number of images (1 or more).');
+                return;
+            }
+            const fileInputsDiv = document.getElementById('fileInputs');
+            fileInputsDiv.innerHTML = '';
+            for (let i = 0; i < numImages; i++) {
+                const group = document.createElement('div');
+                group.className = 'file-input-group';
+                const label = document.createElement('label');
+                label.htmlFor = `image${i}`;
+                label.textContent = `Image ${i + 1}:`;
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.id = `image${i}`;
+                group.appendChild(label);
+                group.appendChild(input);
+                fileInputsDiv.appendChild(group);
+            }
+        }
+
+        async function stitchImages() {
+            const orientation = document.getElementById('orientation').value;
+            const numImages = parseInt(document.getElementById('numImages').value);
+            const canvas = document.getElementById('resultCanvas');
+            const ctx = canvas.getContext('2d');
+            const images = [];
+
+            // Load images
+            for (let i = 0; i < numImages; i++) {
+                const input = document.getElementById(`image${i}`);
+                if (!input.files[0]) {
+                    alert(`Please select an image for input ${i + 1}.`);
+                    return;
+                }
+                const img = new Image();
+                img.src = URL.createObjectURL(input.files[0]);
+                await new Promise(resolve => img.onload = resolve);
+                images.push(img);
+            }
+
+            // Calculate dimensions
+            let targetSize, totalSize;
+            if (orientation === 'horizontal') {
+                targetSize = Math.min(...images.map(img => img.height));
+                totalSize = images.reduce((sum, img) => sum + img.width * (targetSize / img.height), 0);
+                canvas.width = totalSize;
+                canvas.height = targetSize;
+            } else {
+                targetSize = Math.min(...images.map(img => img.width));
+                totalSize = images.reduce((sum, img) => sum + img.height * (targetSize / img.width), 0);
+                canvas.width = targetSize;
+                canvas.height = totalSize;
+            }
+
+            // Clear canvas and set background to white
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw images
+            let offset = 0;
+            for (const img of images) {
+                let drawWidth, drawHeight;
+                if (orientation === 'horizontal') {
+                    drawHeight = targetSize;
+                    drawWidth = img.width * (targetSize / img.height);
+                    ctx.drawImage(img, offset, 0, drawWidth, drawHeight);
+                    offset += drawWidth;
+                } else {
+                    drawWidth = targetSize;
+                    drawHeight = img.height * (targetSize / img.width);
+                    ctx.drawImage(img, 0, offset, drawWidth, drawHeight);
+                    offset += drawHeight;
+                }
+            }
+
+            // Create download link
+            const downloadLinkDiv = document.getElementById('downloadLink');
+            downloadLinkDiv.innerHTML = '';
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/jpeg');
+            link.download = 'stitched_image.jpg';
+            link.textContent = 'Download Stitched Image';
+            downloadLinkDiv.appendChild(link);
+
+            // Clean up object URLs
+            images.forEach(img => URL.revokeObjectURL(img.src));
+        }
+    </script>
+</body>
+
+</html>
