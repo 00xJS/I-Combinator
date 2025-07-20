@@ -114,11 +114,16 @@
             text-align: center;
         }
 
-        canvas {
+        canvas,
+        #resultImage {
             max-width: 100%;
             border: 1px solid var(--border-gray);
             border-radius: 4px;
             margin-top: 20px;
+        }
+
+        #resultImage {
+            display: none;
         }
 
         #downloadLink a {
@@ -165,7 +170,8 @@
         </div>
         <div>
             <h3>Result</h3>
-            <canvas id="resultCanvas"></canvas>
+            <canvas id="resultCanvas" style="display: none;"></canvas>
+            <img id="resultImage" alt="Stitched Image">
             <div id="downloadLink" class="form-actions"></div>
         </div>
     </div>
@@ -250,11 +256,19 @@
                 }
             }
 
+            // Generate data URL from canvas
+            const dataURL = canvas.toDataURL('image/jpeg');
+
+            // Display in img element for long-press saving
+            const resultImage = document.getElementById('resultImage');
+            resultImage.src = dataURL;
+            resultImage.style.display = 'block';
+
             // Create download link
             const downloadLinkDiv = document.getElementById('downloadLink');
             downloadLinkDiv.innerHTML = '';
             const link = document.createElement('a');
-            link.href = canvas.toDataURL('image/jpeg');
+            link.href = dataURL;
             link.download = 'stitched_image.jpg';
             link.textContent = 'Download Stitched Image';
             downloadLinkDiv.appendChild(link);
