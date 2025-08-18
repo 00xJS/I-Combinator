@@ -114,15 +114,11 @@
             text-align: center;
         }
 
-        canvas,
         #resultImage {
             max-width: 100%;
             border: 1px solid var(--border-gray);
             border-radius: 4px;
             margin-top: 20px;
-        }
-
-        #resultImage {
             display: none;
         }
 
@@ -178,14 +174,13 @@
         </div>
         <div>
             <h3>Result</h3>
-            <canvas id="resultCanvas" style="display: none;"></canvas>
             <img id="resultImage" alt="Stitched Image">
             <div id="downloadLink" class="form-actions"></div>
         </div>
+        <footer class="footer">
+            <p><a href="https://observation-deck.netlify.app/">Observation Deck</a> | JS | <a href="https://github.com/00xJS/I-Combinator">Project GitHub</a></p>
+        </footer>
     </div>
-    <footer class="footer">
-        <p><a href="https://observation-deck.netlify.app/">Observation Deck</a> | JS | <a href="https://github.com/00xJS/I-Combinator">Project GitHub</a></p>
-    </footer>
 
     <script>
         function updateFileInputs() {
@@ -215,11 +210,10 @@
         async function stitchImages() {
             const orientation = document.getElementById('orientation').value;
             const numImages = parseInt(document.getElementById('numImages').value);
-            const canvas = document.getElementById('resultCanvas');
+            const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             const images = [];
 
-            // Load images
             for (let i = 0; i < numImages; i++) {
                 const input = document.getElementById(`image${i}`);
                 if (!input.files[0]) {
@@ -232,7 +226,6 @@
                 images.push(img);
             }
 
-            // Calculate dimensions
             let targetSize, totalSize;
             if (orientation === 'horizontal') {
                 targetSize = Math.min(...images.map(img => img.height));
@@ -246,11 +239,9 @@
                 canvas.height = totalSize;
             }
 
-            // Clear canvas and set background to white
             ctx.fillStyle = 'white';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw images
             let offset = 0;
             for (const img of images) {
                 let drawWidth, drawHeight;
@@ -267,15 +258,12 @@
                 }
             }
 
-            // Generate data URL from canvas
             const dataURL = canvas.toDataURL('image/jpeg');
 
-            // Display in img element for long-press saving
             const resultImage = document.getElementById('resultImage');
             resultImage.src = dataURL;
             resultImage.style.display = 'block';
 
-            // Create download link
             const downloadLinkDiv = document.getElementById('downloadLink');
             downloadLinkDiv.innerHTML = '';
             const link = document.createElement('a');
@@ -284,7 +272,6 @@
             link.textContent = 'Download Stitched Image';
             downloadLinkDiv.appendChild(link);
 
-            // Clean up object URLs
             images.forEach(img => URL.revokeObjectURL(img.src));
         }
     </script>
