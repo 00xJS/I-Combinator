@@ -45,11 +45,28 @@
             background-color: var(--hover-orange);
         }
 
-        .inline-fields {
+        .controls-row {
             display: flex;
-            gap: 15px;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 20px 0;
+            align-items: flex-start;
+        }
+
+        .control-group {
+            flex: 1 1 200px;
+        }
+
+        .control-group label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .input-with-button {
+            display: flex;
+            gap: 10px;
             align-items: center;
-            margin: 15px 0;
         }
 
         .form-actions {
@@ -59,22 +76,26 @@
             margin-top: 20px;
         }
 
-        .dynamic-section {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+        .file-inputs-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
             margin: 20px 0;
         }
 
-        .dynamic-section .file-input-group {
+        .file-inputs-grid .file-input-group {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .dynamic-section label {
+        .file-inputs-grid label {
             font-weight: bold;
-            margin: 0;
+            white-space: nowrap;
+        }
+
+        .file-inputs-grid input[type="file"] {
+            max-width: none;
         }
 
         label {
@@ -152,21 +173,23 @@
 <body onload="updateFileInputs()">
     <div class="container">
         <h1>I-Combinator</h1>
-        <div class="dynamic-section">
-            <div>
+        <div class="controls-row">
+            <div class="control-group">
                 <label for="orientation">Stitch Orientation:</label>
                 <select id="orientation">
                     <option value="horizontal">Horizontal</option>
                     <option value="vertical">Vertical</option>
                 </select>
             </div>
-            <div class="inline-fields">
+            <div class="control-group">
                 <label for="numImages">Number of Images:</label>
-                <input type="number" id="numImages" min="1" value="3">
-                <button onclick="updateFileInputs()">Set Number</button>
+                <div class="input-with-button">
+                    <input type="number" id="numImages" min="1" value="3">
+                    <button onclick="updateFileInputs()">Set Number</button>
+                </div>
             </div>
         </div>
-        <div id="fileInputs" class="dynamic-section">
+        <div id="fileInputs" class="file-inputs-grid">
             <!-- File inputs will be dynamically added here on load -->
         </div>
         <div class="form-actions">
