@@ -5,39 +5,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>I-Combinator</title>
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0d1c">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f5f6fb">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖼️</text></svg>">
     <style>
+        /* ===== Observation Deck design tokens ===== */
         :root {
-            color-scheme: light dark;
-            --primary: #0056b3;
-            --primary-hover: #004494;
-            --bg: #f3f5f8;
-            --surface: #ffffff;
-            --surface-2: #f6f8fb;
-            --text: #1c2430;
-            --text-muted: #5c6675;
-            --border-strong: #767676;
-            --border-soft: #d7dce3;
-            --error: #b3261e;
-            --error-bg: #b3261e;
-            --link: #0056b3;
-            --focus: #0056b3;
-            --radius: 8px;
+            color-scheme: dark light;
+
+            /* surfaces */
+            --bg: #0a0d1c;
+            --bg-raised: #10142e;
+            --card: #12163a;
+            --card-chrome: #0c0f26;
+            --border: rgba(255, 255, 255, 0.09);
+            --border-hover: rgba(255, 154, 68, 0.55);
+
+            /* text */
+            --text: #e8eaf6;
+            --muted: #9ba1c5;
+            --faint: #6c7299;
+
+            /* accents */
+            --accent: #ff9a44;
+            --accent-deep: #e8792b;
+            --magenta: #c23e8c;
+
+            /* semantic */
+            --live: #3ddc84;
+            --warn: #ffc24b;
+            --down: #ff6b6b;
+
+            /* components */
+            --tag-bg: rgba(255, 154, 68, 0.10);
+            --tag-text: #ffb877;
+            --shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+            --btn-ink: #0a0d1c;
+            --btc: #f7931a;
+
+            /* type */
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", sans-serif;
+            --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+
+            /* shape */
+            --radius-card: 12px;
+            --radius-control: 8px;
+            --radius-pill: 999px;
         }
 
-        @media (prefers-color-scheme: dark) {
+        @media (prefers-color-scheme: light) {
             :root {
-                --bg: #13171c;
-                --surface: #1d232b;
-                --surface-2: #252c35;
-                --text: #e7eaee;
-                --text-muted: #a3adba;
-                --border-strong: #97a1ad;
-                --border-soft: #3a434e;
-                --error: #ff8a80;
-                --error-bg: #c62828;
-                --primary-hover: #2472c8;
-                --link: #85b8f0;
-                --focus: #85b8f0;
+                --bg: #f5f6fb;
+                --bg-raised: #ffffff;
+                --card: #ffffff;
+                --card-chrome: #eceef7;
+                --border: #dcdeeb;
+                --border-hover: rgba(232, 121, 43, 0.6);
+                --text: #1b1f4b;
+                --muted: #4d5378;
+                --faint: #6a7095;
+                --accent: #c95f16;
+                --accent-deep: #a84c09;
+                --tag-bg: rgba(232, 121, 43, 0.10);
+                --tag-text: #a3540e;
+                --live: #148a4d;
+                --down: #d64545;
+                --shadow: 0 10px 30px rgba(27, 31, 75, 0.10);
+                --btn-ink: #ffffff;
             }
         }
 
@@ -48,40 +82,96 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: var(--font-sans);
             margin: 20px;
-            background-color: var(--bg);
+            background: var(--bg);
             color: var(--text);
             line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ambient glow */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background:
+                radial-gradient(900px 480px at 15% -10%, rgba(232, 121, 43, 0.10), transparent 60%),
+                radial-gradient(800px 480px at 90% 0%, rgba(194, 62, 140, 0.09), transparent 60%);
+        }
+
+        ::selection {
+            background: var(--accent-deep);
+            color: #fff;
+        }
+
+        [hidden] {
+            display: none !important;
         }
 
         .container {
             max-width: 800px;
             margin: auto;
-            padding: 24px;
-            background: var(--surface);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.08);
-            border-radius: 12px;
+            padding: 28px 24px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            border-radius: var(--radius-card);
+        }
+
+        .kicker {
+            text-align: center;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--faint);
+            margin: 0 0 10px;
+        }
+
+        .kicker a {
+            color: var(--faint);
+            text-decoration: none;
+        }
+
+        .kicker a:hover {
+            color: var(--accent);
         }
 
         h1 {
             text-align: center;
             margin: 0 0 4px;
+            font-weight: 700;
         }
 
         h2 {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--faint);
             margin: 0 0 12px;
         }
 
         .tagline {
             text-align: center;
-            color: var(--text-muted);
+            color: var(--muted);
             margin: 0 0 24px;
         }
 
+        a {
+            color: var(--accent);
+        }
+
+        a:hover {
+            color: var(--accent-deep);
+        }
+
         :focus-visible {
-            outline: 2px solid var(--focus);
-            outline-offset: 2px;
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
         }
 
         button,
@@ -90,27 +180,29 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding: 10px 20px;
-            font-size: 16px;
-            font-family: inherit;
+            padding: 9px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: var(--font-sans);
             min-height: 44px;
             cursor: pointer;
-            background-color: var(--primary);
-            color: #fff;
+            background: var(--accent);
+            color: var(--btn-ink);
             border: none;
-            border-radius: var(--radius);
+            border-radius: var(--radius-control);
             text-decoration: none;
-            transition: background-color 0.15s, transform 0.05s;
+            transition: background 0.2s ease, transform 0.2s ease;
         }
 
         button:hover,
         .btn:hover {
-            background-color: var(--primary-hover);
+            background: var(--accent-deep);
+            transform: translateY(-1px);
         }
 
         button:active,
         .btn:active {
-            transform: translateY(1px);
+            transform: translateY(0);
         }
 
         .drop-zone {
@@ -120,28 +212,30 @@
             gap: 4px;
             width: 100%;
             padding: 32px 16px;
-            background: var(--surface-2);
+            background: var(--bg-raised);
             color: var(--text);
-            border: 2px dashed var(--border-strong);
-            border-radius: var(--radius);
-            transition: border-color 0.15s, background-color 0.15s;
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-card);
+            transition: border-color 0.2s ease, background 0.2s ease;
         }
 
         .drop-zone:hover,
         .drop-zone.drag-active {
-            background: var(--surface-2);
-            border-color: var(--focus);
+            background: var(--bg-raised);
+            border-color: var(--border-hover);
             color: var(--text);
+            transform: none;
         }
 
         .drop-zone strong {
-            color: var(--link);
+            color: var(--accent);
             font-size: 18px;
         }
 
         .drop-zone span {
-            color: var(--text-muted);
+            color: var(--muted);
             font-size: 14px;
+            font-weight: 400;
         }
 
         .thumb-list {
@@ -167,8 +261,8 @@
             width: 112px;
             height: 112px;
             object-fit: cover;
-            border: 1px solid var(--border-soft);
-            border-radius: 6px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-control);
         }
 
         .thumb .badge {
@@ -177,20 +271,30 @@
             left: 4px;
             min-width: 22px;
             text-align: center;
-            padding: 1px 6px;
-            border-radius: 11px;
-            background: rgba(0, 0, 0, 0.65);
+            padding: 2px 7px;
+            border-radius: var(--radius-pill);
+            background: rgba(10, 13, 28, 0.75);
             color: #fff;
-            font-size: 13px;
-            font-weight: bold;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            font-weight: 700;
         }
 
         .thumb-btn {
             min-height: 40px;
             min-width: 40px;
             padding: 4px;
-            font-size: 15px;
-            border-radius: 6px;
+            font-size: 14px;
+            border-radius: var(--radius-control);
+            background: var(--bg-raised);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .thumb-btn:hover {
+            background: var(--bg-raised);
+            border-color: var(--border-hover);
         }
 
         .thumb .remove {
@@ -201,17 +305,20 @@
             min-width: 30px;
             border-radius: 50%;
             font-size: 13px;
-            background: rgba(0, 0, 0, 0.65);
+            background: rgba(10, 13, 28, 0.75);
+            color: #fff;
+            border: none;
         }
 
         .thumb .remove:hover {
-            background: var(--error-bg);
+            background: var(--down);
+            color: var(--btn-ink);
         }
 
         .thumb-actions {
             display: flex;
             justify-content: space-between;
-            margin-top: 4px;
+            margin-top: 6px;
         }
 
         .thumb-btn:disabled {
@@ -220,7 +327,9 @@
         }
 
         .thumb-btn:disabled:hover {
-            background-color: var(--primary);
+            background: var(--bg-raised);
+            border-color: var(--border);
+            transform: none;
         }
 
         .controls-row {
@@ -231,22 +340,33 @@
         }
 
         .control-group label {
-            font-weight: bold;
             display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            letter-spacing: 0.02em;
             margin-bottom: 5px;
         }
 
         input,
         select {
             width: 100%;
-            padding: 8px;
+            padding: 8px 10px;
+            /* 16px, not the deck's 14px: below 16px iOS Safari zooms on focus */
             font-size: 16px;
-            font-family: inherit;
+            font-family: var(--font-sans);
             min-height: 44px;
             color: var(--text);
-            background-color: var(--surface);
-            border: 1px solid var(--border-strong);
-            border-radius: var(--radius);
+            background: var(--bg-raised);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-control);
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255, 154, 68, 0.18);
         }
 
         input[type="color"] {
@@ -257,32 +377,78 @@
         input[type="range"] {
             padding: 0;
             border: none;
-            accent-color: var(--focus);
+            background: none;
+            accent-color: var(--accent);
         }
 
         .status {
-            margin: 12px 0;
-            min-height: 1.5em;
-            color: var(--text-muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin: 12px 8px 12px 0;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+            background: var(--bg-raised);
+            color: var(--muted);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-variant-numeric: tabular-nums;
         }
 
-        .status-error {
-            color: var(--error);
-            font-weight: bold;
+        .status .dot {
+            flex: none;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--faint);
+        }
+
+        .status.ok {
+            color: var(--live);
+        }
+
+        .status.ok .dot {
+            background: var(--live);
+            box-shadow: 0 0 8px var(--live);
+            animation: deck-pulse 2.4s ease-in-out infinite;
+        }
+
+        .status.down {
+            color: var(--down);
+        }
+
+        .status.down .dot {
+            background: var(--down);
+            box-shadow: 0 0 8px var(--down);
+        }
+
+        @keyframes deck-pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.35;
+            }
         }
 
         .placeholder {
-            border: 2px dashed var(--border-soft);
-            border-radius: var(--radius);
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-card);
             padding: 48px 16px;
             text-align: center;
-            color: var(--text-muted);
+            color: var(--faint);
         }
 
         #resultImage {
             max-width: 100%;
-            border: 1px solid var(--border-soft);
-            border-radius: 6px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-control);
         }
 
         .result-actions {
@@ -295,14 +461,31 @@
             text-align: center;
             margin-top: 30px;
             padding: 10px 10px 0;
-            border-top: 1px solid var(--border-soft);
-            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            color: var(--faint);
+            font-size: 13px;
         }
 
         .footer a {
             display: inline-block;
             padding: 12px 8px;
-            color: var(--text-muted);
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: var(--accent-deep);
+            text-decoration: underline;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation: none !important;
+                transition: none !important;
+            }
         }
 
         @media (max-width: 480px) {
@@ -328,6 +511,7 @@
 
 <body>
     <main class="container">
+        <p class="kicker"><a href="https://observation-deck.netlify.app/">Observation Deck</a> / I-Combinator</p>
         <h1>I-Combinator</h1>
         <p class="tagline">Combine images side by side or stacked — runs entirely in your browser.</p>
 
@@ -377,8 +561,8 @@
             </div>
         </div>
 
-        <p id="statusError" class="status status-error" role="alert" hidden></p>
-        <p id="statusInfo" class="status" role="status">Add images to get started.</p>
+        <p id="statusError" class="status down" role="alert" hidden><span class="dot"></span><span id="statusErrorText"></span></p>
+        <p id="statusInfo" class="status" role="status"><span class="dot"></span><span id="statusInfoText">Add images to get started.</span></p>
 
         <div id="placeholder" class="placeholder">Your stitched image will appear here.</div>
         <section id="resultSection" hidden>
@@ -410,12 +594,13 @@
         let addQueue = Promise.resolve();
 
         function setError(msg) {
-            $('statusError').textContent = msg ? '⚠ ' + msg : '';
+            $('statusErrorText').textContent = msg;
             $('statusError').hidden = !msg;
         }
 
-        function setInfo(msg) {
-            $('statusInfo').textContent = msg;
+        function setInfo(msg, ok) {
+            $('statusInfoText').textContent = msg;
+            $('statusInfo').classList.toggle('ok', !!ok);
         }
 
         async function loadImage(file) {
@@ -683,7 +868,7 @@
             const fallback = blob.type !== format ? ` Saved as ${actualExt.toUpperCase()} (this browser doesn't support the chosen format).` : '';
             const scaled = scale < 1 ? ' Scaled down to fit browser canvas limits.' : '';
             setInfo(`Stitched ${images.length} image${images.length === 1 ? '' : 's'} ` +
-                `${horiz ? 'horizontally' : 'vertically'} — ${canvas.width}×${canvas.height}px. Download ready.${scaled}${fallback}`);
+                `${horiz ? 'horizontally' : 'vertically'} — ${canvas.width}×${canvas.height}px. Download ready.${scaled}${fallback}`, true);
         }
 
         function canvasAlive(ctx) {

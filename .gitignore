@@ -1,0 +1,6 @@
+# Local-only handoff files — never commit
+THEME-HANDOFF.md
+HANDOFF.md
+
+# Claude Code session tooling
+.claude/
