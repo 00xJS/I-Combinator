@@ -7,54 +7,227 @@
     <title>I-Combinator</title>
     <style>
         :root {
-            --primary-blue: #007bff;
-            --hover-orange: #e67300;
-            --border-gray: #ccc;
-            --focus-shadow: rgba(0, 123, 255, 0.5);
-            --error-red: #ff0000;
+            color-scheme: light dark;
+            --primary: #0056b3;
+            --primary-hover: #004494;
+            --bg: #f3f5f8;
+            --surface: #ffffff;
+            --surface-2: #f6f8fb;
+            --text: #1c2430;
+            --text-muted: #5c6675;
+            --border-strong: #767676;
+            --border-soft: #d7dce3;
+            --error: #b3261e;
+            --error-bg: #b3261e;
+            --link: #0056b3;
+            --focus: #0056b3;
+            --radius: 8px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #13171c;
+                --surface: #1d232b;
+                --surface-2: #252c35;
+                --text: #e7eaee;
+                --text-muted: #a3adba;
+                --border-strong: #97a1ad;
+                --border-soft: #3a434e;
+                --error: #ff8a80;
+                --error-bg: #c62828;
+                --primary-hover: #2472c8;
+                --link: #85b8f0;
+                --focus: #85b8f0;
+            }
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 20px;
-            background-color: #f9f9f9;
-            color: #333;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
         }
 
         .container {
             max-width: 800px;
             margin: auto;
-            padding: 20px;
-            background: #ffffff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+            padding: 24px;
+            background: var(--surface);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
         }
 
-        button {
+        h1 {
+            text-align: center;
+            margin: 0 0 4px;
+        }
+
+        h2 {
+            margin: 0 0 12px;
+        }
+
+        .tagline {
+            text-align: center;
+            color: var(--text-muted);
+            margin: 0 0 24px;
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--focus);
+            outline-offset: 2px;
+        }
+
+        button,
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             padding: 10px 20px;
             font-size: 16px;
+            font-family: inherit;
+            min-height: 44px;
             cursor: pointer;
-            background-color: var(--primary-blue);
-            color: white;
+            background-color: var(--primary);
+            color: #fff;
             border: none;
-            border-radius: 4px;
-            transition: background-color 0.2s;
+            border-radius: var(--radius);
+            text-decoration: none;
+            transition: background-color 0.15s, transform 0.05s;
         }
 
-        button:hover {
-            background-color: var(--hover-orange);
+        button:hover,
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:active,
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .drop-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            width: 100%;
+            padding: 32px 16px;
+            background: var(--surface-2);
+            color: var(--text);
+            border: 2px dashed var(--border-strong);
+            border-radius: var(--radius);
+            transition: border-color 0.15s, background-color 0.15s;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.drag-active {
+            background: var(--surface-2);
+            border-color: var(--focus);
+            color: var(--text);
+        }
+
+        .drop-zone strong {
+            color: var(--link);
+            font-size: 18px;
+        }
+
+        .drop-zone span {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .thumb-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            list-style: none;
+            margin: 16px 0 0;
+            padding: 0;
+        }
+
+        .thumb-list:empty {
+            margin: 0;
+        }
+
+        .thumb {
+            position: relative;
+            width: 112px;
+        }
+
+        .thumb img {
+            display: block;
+            width: 112px;
+            height: 112px;
+            object-fit: cover;
+            border: 1px solid var(--border-soft);
+            border-radius: 6px;
+        }
+
+        .thumb .badge {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            min-width: 22px;
+            text-align: center;
+            padding: 1px 6px;
+            border-radius: 11px;
+            background: rgba(0, 0, 0, 0.65);
+            color: #fff;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .thumb-btn {
+            min-height: 40px;
+            min-width: 40px;
+            padding: 4px;
+            font-size: 15px;
+            border-radius: 6px;
+        }
+
+        .thumb .remove {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            min-height: 30px;
+            min-width: 30px;
+            border-radius: 50%;
+            font-size: 13px;
+            background: rgba(0, 0, 0, 0.65);
+        }
+
+        .thumb .remove:hover {
+            background: var(--error-bg);
+        }
+
+        .thumb-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4px;
+        }
+
+        .thumb-btn:disabled {
+            opacity: 0.35;
+            cursor: default;
+        }
+
+        .thumb-btn:disabled:hover {
+            background-color: var(--primary);
         }
 
         .controls-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
             margin: 20px 0;
-            align-items: flex-start;
-        }
-
-        .control-group {
-            flex: 1 1 200px;
         }
 
         .control-group label {
@@ -63,240 +236,547 @@
             margin-bottom: 5px;
         }
 
-        .input-with-button {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .file-inputs-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .file-inputs-grid .file-input-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .file-inputs-grid label {
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-        .file-inputs-grid input[type="file"] {
-            max-width: none;
-        }
-
-        label {
-            font-weight: bold;
-            display: block;
-            margin: 5px 0;
-        }
-
         input,
         select {
+            width: 100%;
             padding: 8px;
-            font-size: 14px;
-            border: 1px solid var(--border-gray);
-            border-radius: 4px;
-            max-width: 200px;
+            font-size: 16px;
+            font-family: inherit;
+            min-height: 44px;
+            color: var(--text);
+            background-color: var(--surface);
+            border: 1px solid var(--border-strong);
+            border-radius: var(--radius);
         }
 
-        input:invalid,
-        select:invalid {
-            border-color: var(--error-red);
+        input[type="color"] {
+            padding: 4px;
+            cursor: pointer;
         }
 
-        input:focus,
-        select:focus {
-            outline: none;
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 4px var(--focus-shadow);
+        input[type="range"] {
+            padding: 0;
+            border: none;
+            accent-color: var(--focus);
         }
 
-        h1,
-        h3 {
-            color: var(--primary-blue);
-            margin-bottom: 15px;
+        .status {
+            margin: 12px 0;
+            min-height: 1.5em;
+            color: var(--text-muted);
         }
 
-        h1 {
+        .status-error {
+            color: var(--error);
+            font-weight: bold;
+        }
+
+        .placeholder {
+            border: 2px dashed var(--border-soft);
+            border-radius: var(--radius);
+            padding: 48px 16px;
             text-align: center;
+            color: var(--text-muted);
         }
 
         #resultImage {
             max-width: 100%;
-            border: 1px solid var(--border-gray);
-            border-radius: 4px;
-            margin-top: 20px;
-            display: none;
+            border: 1px solid var(--border-soft);
+            border-radius: 6px;
         }
 
-        #downloadLink a {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: var(--primary-blue);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            text-decoration: none;
-            transition: background-color 0.2s;
-        }
-
-        #downloadLink a:hover {
-            background-color: var(--hover-orange);
+        .result-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 16px;
         }
 
         .footer {
             text-align: center;
             margin-top: 30px;
-            padding: 10px;
-            border-top: 1px solid var(--border-gray);
-            color: #666;
+            padding: 10px 10px 0;
+            border-top: 1px solid var(--border-soft);
+            color: var(--text-muted);
+        }
+
+        .footer a {
+            display: inline-block;
+            padding: 12px 8px;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 480px) {
+            body {
+                margin: 8px;
+            }
+
+            .container {
+                padding: 16px;
+            }
+
+            .thumb {
+                width: 88px;
+            }
+
+            .thumb img {
+                width: 88px;
+                height: 88px;
+            }
         }
     </style>
 </head>
 
-<body onload="updateFileInputs()">
-    <div class="container">
+<body>
+    <main class="container">
         <h1>I-Combinator</h1>
+        <p class="tagline">Combine images side by side or stacked — runs entirely in your browser.</p>
+
+        <button type="button" id="dropZone" class="drop-zone">
+            <strong>Choose images</strong>
+            <span>or drag &amp; drop anywhere — or paste (Ctrl/Cmd+V)</span>
+        </button>
+        <input type="file" id="fileInput" accept="image/*" multiple hidden>
+
+        <ul id="thumbList" class="thumb-list" aria-label="Selected images"></ul>
+
         <div class="controls-row">
             <div class="control-group">
-                <label for="orientation">Stitch Orientation:</label>
+                <label for="orientation">Orientation</label>
                 <select id="orientation">
-                    <option value="horizontal">Horizontal</option>
-                    <option value="vertical">Vertical</option>
+                    <option value="horizontal">Horizontal (side by side)</option>
+                    <option value="vertical">Vertical (stacked)</option>
                 </select>
             </div>
             <div class="control-group">
-                <label for="numImages">Number of Images:</label>
-                <div class="input-with-button">
-                    <input type="number" id="numImages" min="1" value="3">
-                    <button onclick="updateFileInputs()">Set Number</button>
-                </div>
+                <label for="sizing">Sizing</label>
+                <select id="sizing">
+                    <option value="smallest">Match smallest image</option>
+                    <option value="largest">Match largest image</option>
+                    <option value="original">Keep original sizes</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="gap">Gap (px)</label>
+                <input type="number" id="gap" min="0" max="1000" step="1" value="0">
+            </div>
+            <div class="control-group">
+                <label for="bgColor">Background</label>
+                <input type="color" id="bgColor" value="#ffffff">
+            </div>
+            <div class="control-group">
+                <label for="format">Format</label>
+                <select id="format">
+                    <option value="image/jpeg">JPEG</option>
+                    <option value="image/png">PNG</option>
+                    <option value="image/webp">WebP</option>
+                </select>
+            </div>
+            <div class="control-group" id="qualityGroup">
+                <label for="quality">Quality (<span id="qualityVal">92%</span>)</label>
+                <input type="range" id="quality" min="0.1" max="1" step="0.01" value="0.92">
             </div>
         </div>
-        <div id="fileInputs" class="file-inputs-grid">
-            <!-- File inputs will be dynamically added here on load -->
-        </div>
-        <div class="form-actions">
-            <button onclick="stitchImages()">Stitch Images</button>
-        </div>
-        <div>
-            <h3>Result</h3>
-            <img id="resultImage" alt="Stitched Image">
-            <div id="downloadLink" class="form-actions"></div>
-        </div>
+
+        <p id="statusError" class="status status-error" role="alert" hidden></p>
+        <p id="statusInfo" class="status" role="status">Add images to get started.</p>
+
+        <div id="placeholder" class="placeholder">Your stitched image will appear here.</div>
+        <section id="resultSection" hidden>
+            <h2>Result</h2>
+            <img id="resultImage" alt="">
+            <div class="result-actions">
+                <a id="downloadBtn" class="btn">Download</a>
+            </div>
+        </section>
+
         <footer class="footer">
             <p><a href="https://observation-deck.netlify.app/">Observation Deck</a> | JS | <a href="https://github.com/00xJS/I-Combinator">Project GitHub</a></p>
         </footer>
-    </div>
+    </main>
 
     <script>
-        function updateFileInputs() {
-            const numImages = parseInt(document.getElementById('numImages').value);
-            if (numImages < 1) {
-                alert('Please enter a number of images (1 or more).');
+        const $ = id => document.getElementById(id);
+        const MAX_SIDE = 16384;
+        const SETTINGS_KEY = 'i-combinator-settings';
+        const EXT = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
+
+        let images = [];
+        let uid = 0;
+        let dragIndex = null;
+        let stitchTimer = null;
+        let stitchToken = 0;
+        let resultURL = null;
+        let exportError = false;
+        let addQueue = Promise.resolve();
+
+        function setError(msg) {
+            $('statusError').textContent = msg ? '⚠ ' + msg : '';
+            $('statusError').hidden = !msg;
+        }
+
+        function setInfo(msg) {
+            $('statusInfo').textContent = msg;
+        }
+
+        async function loadImage(file) {
+            if (!file.type.startsWith('image/')) {
+                throw new Error(`Skipped "${file.name}" — not an image file.`);
+            }
+            const url = URL.createObjectURL(file);
+            const img = new Image();
+            try {
+                // onload/onerror rather than decode(): decode() is deferred
+                // indefinitely while the tab is hidden
+                await new Promise((resolve, reject) => {
+                    img.onload = resolve;
+                    img.onerror = reject;
+                    img.src = url;
+                });
+            } catch {
+                URL.revokeObjectURL(url);
+                throw new Error(`Skipped "${file.name}" — couldn't be read as an image.`);
+            }
+            if (!img.naturalWidth || !img.naturalHeight) {
+                URL.revokeObjectURL(url);
+                throw new Error(`Skipped "${file.name}" — it has no usable dimensions.`);
+            }
+            return { id: ++uid, file, url, img, name: file.name };
+        }
+
+        function addFiles(fileList) {
+            // Capture synchronously (a live FileList empties when the input resets),
+            // then serialize batches so a quick drop+paste can't interleave ordering
+            const files = [...fileList];
+            if (!files.length) return addQueue;
+            addQueue = addQueue.then(async () => {
+                const errors = [];
+                for (const file of files) {
+                    try {
+                        images.push(await loadImage(file));
+                    } catch (e) {
+                        errors.push(e.message);
+                    }
+                }
+                setError(errors.join(' '));
+                renderThumbs();
+                scheduleStitch();
+            });
+            return addQueue;
+        }
+
+        function removeImage(id) {
+            const i = images.findIndex(o => o.id === id);
+            if (i === -1) return;
+            URL.revokeObjectURL(images[i].url);
+            images.splice(i, 1);
+            renderThumbs();
+            // Keep keyboard focus in the list after the button under focus disappears
+            const removeBtns = document.querySelectorAll('.thumb .remove');
+            const target = removeBtns[Math.min(i, removeBtns.length - 1)];
+            (target || $('dropZone')).focus();
+            scheduleStitch();
+        }
+
+        function moveImage(id, delta) {
+            const i = images.findIndex(o => o.id === id);
+            const j = i + delta;
+            if (i === -1 || j < 0 || j >= images.length) return;
+            [images[i], images[j]] = [images[j], images[i]];
+            renderThumbs({ id, cls: delta < 0 ? 'move-earlier' : 'move-later' });
+            scheduleStitch();
+        }
+
+        function reorder(from, to) {
+            if (from === null || from === to || from < 0 || to < 0) return;
+            const [moved] = images.splice(from, 1);
+            images.splice(to, 0, moved);
+            renderThumbs();
+            scheduleStitch();
+        }
+
+        function renderThumbs(focusSpec) {
+            const list = $('thumbList');
+            list.textContent = '';
+            images.forEach((o, i) => {
+                const li = document.createElement('li');
+                li.className = 'thumb';
+                li.draggable = true;
+                li.dataset.id = o.id;
+
+                const img = document.createElement('img');
+                img.src = o.url;
+                img.alt = `Image ${i + 1}: ${o.name}`;
+                img.title = o.name;
+                // Otherwise the img (draggable by default) becomes the drag source
+                // and carries a Files payload that reads as an external file drop
+                img.draggable = false;
+
+                const badge = document.createElement('span');
+                badge.className = 'badge';
+                badge.textContent = i + 1;
+
+                const remove = document.createElement('button');
+                remove.type = 'button';
+                remove.className = 'thumb-btn remove';
+                remove.textContent = '✕';
+                remove.setAttribute('aria-label', `Remove image ${i + 1} (${o.name})`);
+                remove.addEventListener('click', () => removeImage(o.id));
+
+                const actions = document.createElement('div');
+                actions.className = 'thumb-actions';
+                const earlier = document.createElement('button');
+                earlier.type = 'button';
+                earlier.className = 'thumb-btn move-earlier';
+                earlier.textContent = '◀';
+                earlier.disabled = i === 0;
+                earlier.setAttribute('aria-label', `Move image ${i + 1} (${o.name}) earlier`);
+                earlier.addEventListener('click', () => moveImage(o.id, -1));
+                const later = document.createElement('button');
+                later.type = 'button';
+                later.className = 'thumb-btn move-later';
+                later.textContent = '▶';
+                later.disabled = i === images.length - 1;
+                later.setAttribute('aria-label', `Move image ${i + 1} (${o.name}) later`);
+                later.addEventListener('click', () => moveImage(o.id, 1));
+                actions.append(earlier, later);
+
+                li.addEventListener('dragstart', e => {
+                    dragIndex = i;
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/plain', String(i));
+                });
+                li.addEventListener('dragend', () => { dragIndex = null; });
+                li.addEventListener('dragover', e => e.preventDefault());
+                li.addEventListener('drop', e => {
+                    // Only intercept internal reorders — OS file drops on a
+                    // thumbnail must bubble to the document handler
+                    if (dragIndex === null) return;
+                    e.preventDefault();
+                    e.stopPropagation();
+                    reorder(dragIndex, i);
+                    dragIndex = null;
+                });
+
+                li.append(img, badge, remove, actions);
+                list.appendChild(li);
+            });
+            if (focusSpec) {
+                const btn = list.querySelector(`[data-id="${focusSpec.id}"] .${focusSpec.cls}`);
+                // If the item landed at an end its button is now disabled —
+                // keep keyboard focus on the sibling instead of dropping to <body>
+                if (btn) (btn.disabled ? btn.parentElement.querySelector('button:not(:disabled)') : btn).focus();
+            }
+        }
+
+        function scheduleStitch() {
+            clearTimeout(stitchTimer);
+            stitchTimer = setTimeout(stitch, 200);
+        }
+
+        async function stitch() {
+            const token = ++stitchToken;
+            if (!images.length) {
+                if (resultURL) {
+                    URL.revokeObjectURL(resultURL);
+                    resultURL = null;
+                }
+                $('resultImage').removeAttribute('src');
+                $('downloadBtn').removeAttribute('href');
+                $('resultSection').hidden = true;
+                $('placeholder').hidden = false;
+                setError('');
+                exportError = false;
+                setInfo('Add images to get started.');
                 return;
             }
-            const fileInputsDiv = document.getElementById('fileInputs');
-            fileInputsDiv.innerHTML = '';
-            for (let i = 0; i < numImages; i++) {
-                const group = document.createElement('div');
-                group.className = 'file-input-group';
-                const label = document.createElement('label');
-                label.htmlFor = `image${i}`;
-                label.textContent = `Image ${i + 1}:`;
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
-                input.id = `image${i}`;
-                group.appendChild(label);
-                group.appendChild(input);
-                fileInputsDiv.appendChild(group);
+
+            const horiz = $('orientation').value === 'horizontal';
+            const sizing = $('sizing').value;
+            const gap = Math.min(Math.max(parseInt($('gap').value, 10) || 0, 0), 1000);
+            const cross = img => horiz ? img.naturalHeight : img.naturalWidth;
+
+            let target = null;
+            if (sizing === 'smallest') target = Math.min(...images.map(o => cross(o.img)));
+            if (sizing === 'largest') target = Math.max(...images.map(o => cross(o.img)));
+
+            const draws = images.map(o => {
+                const { naturalWidth: w, naturalHeight: h } = o.img;
+                if (target === null) return { img: o.img, w, h };
+                const s = target / cross(o.img);
+                return { img: o.img, w: w * s, h: h * s };
+            });
+
+            const mainTotal = draws.reduce((sum, d) => sum + (horiz ? d.w : d.h), 0) + gap * (draws.length - 1);
+            const crossTotal = target !== null ? target : Math.max(...draws.map(d => horiz ? d.h : d.w));
+            const width = horiz ? mainTotal : crossTotal;
+            const height = horiz ? crossTotal : mainTotal;
+
+            // Browsers cap canvas size (per-side everywhere, total area on iOS)
+            // and fail SILENTLY past the limit — so draw, verify a pixel came out
+            // opaque, and retry at half scale until the canvas is actually live
+            let scale = Math.min(1, MAX_SIDE / width, MAX_SIDE / height);
+            let canvas = null;
+            for (let attempt = 0; attempt < 4; attempt++) {
+                const c = document.createElement('canvas');
+                c.width = Math.max(1, Math.round(width * scale));
+                c.height = Math.max(1, Math.round(height * scale));
+                const ctx = c.getContext('2d');
+                ctx.fillStyle = $('bgColor').value;
+                ctx.fillRect(0, 0, c.width, c.height);
+
+                let offset = 0;
+                for (const d of draws) {
+                    const w = d.w * scale, h = d.h * scale;
+                    if (horiz) {
+                        ctx.drawImage(d.img, offset, 0, w, h);
+                        offset += w + gap * scale;
+                    } else {
+                        ctx.drawImage(d.img, 0, offset, w, h);
+                        offset += h + gap * scale;
+                    }
+                }
+                if (canvasAlive(ctx)) {
+                    canvas = c;
+                    break;
+                }
+                scale /= 2;
+            }
+            if (!canvas) {
+                exportError = true;
+                setError('This stitch is too large for your browser — try fewer or smaller images.');
+                return;
+            }
+
+            const format = $('format').value;
+            const quality = parseFloat($('quality').value) || 0.92;
+            const blob = await new Promise(resolve => canvas.toBlob(resolve, format, quality));
+            if (token !== stitchToken) return;
+            if (!blob) {
+                exportError = true;
+                setError('Export failed — try fewer or smaller images.');
+                return;
+            }
+            if (exportError) {
+                // A later stitch succeeded — retire the stale export error
+                // (skipped-file notices from addFiles are left alone)
+                setError('');
+                exportError = false;
+            }
+
+            if (resultURL) URL.revokeObjectURL(resultURL);
+            resultURL = URL.createObjectURL(blob);
+            const resultImage = $('resultImage');
+            resultImage.src = resultURL;
+            resultImage.alt = `Stitched result: ${images.length} image${images.length === 1 ? '' : 's'} ` +
+                `${horiz ? 'side by side' : 'stacked vertically'}, ${canvas.width} by ${canvas.height} pixels`;
+
+            // Safari falls back to PNG when WebP isn't supported — trust the blob's real type
+            const actualExt = EXT[blob.type] || 'png';
+            const d = new Date();
+            const pad = n => String(n).padStart(2, '0');
+            const stamp = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}`;
+            $('downloadBtn').href = resultURL;
+            $('downloadBtn').download = `stitched_${stamp}.${actualExt}`;
+
+            $('placeholder').hidden = true;
+            $('resultSection').hidden = false;
+            const fallback = blob.type !== format ? ` Saved as ${actualExt.toUpperCase()} (this browser doesn't support the chosen format).` : '';
+            const scaled = scale < 1 ? ' Scaled down to fit browser canvas limits.' : '';
+            setInfo(`Stitched ${images.length} image${images.length === 1 ? '' : 's'} ` +
+                `${horiz ? 'horizontally' : 'vertically'} — ${canvas.width}×${canvas.height}px. Download ready.${scaled}${fallback}`);
+        }
+
+        function canvasAlive(ctx) {
+            try {
+                return ctx.getImageData(0, 0, 1, 1).data[3] === 255;
+            } catch {
+                return false;
             }
         }
 
-        async function stitchImages() {
-            const orientation = document.getElementById('orientation').value;
-            const numImages = parseInt(document.getElementById('numImages').value);
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const images = [];
-
-            for (let i = 0; i < numImages; i++) {
-                const input = document.getElementById(`image${i}`);
-                if (!input.files[0]) {
-                    alert(`Please select an image for input ${i + 1}.`);
-                    return;
-                }
-                const img = new Image();
-                img.src = URL.createObjectURL(input.files[0]);
-                await new Promise(resolve => img.onload = resolve);
-                images.push(img);
-            }
-
-            let targetSize, totalSize;
-            if (orientation === 'horizontal') {
-                targetSize = Math.min(...images.map(img => img.height));
-                totalSize = images.reduce((sum, img) => sum + img.width * (targetSize / img.height), 0);
-                canvas.width = totalSize;
-                canvas.height = targetSize;
-            } else {
-                targetSize = Math.min(...images.map(img => img.width));
-                totalSize = images.reduce((sum, img) => sum + img.height * (targetSize / img.width), 0);
-                canvas.width = targetSize;
-                canvas.height = totalSize;
-            }
-
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            let offset = 0;
-            for (const img of images) {
-                let drawWidth, drawHeight;
-                if (orientation === 'horizontal') {
-                    drawHeight = targetSize;
-                    drawWidth = img.width * (targetSize / img.height);
-                    ctx.drawImage(img, offset, 0, drawWidth, drawHeight);
-                    offset += drawWidth;
-                } else {
-                    drawWidth = targetSize;
-                    drawHeight = img.height * (targetSize / img.width);
-                    ctx.drawImage(img, 0, offset, drawWidth, drawHeight);
-                    offset += drawHeight;
-                }
-            }
-
-            const dataURL = canvas.toDataURL('image/jpeg');
-
-            const resultImage = document.getElementById('resultImage');
-            resultImage.src = dataURL;
-            resultImage.style.display = 'block';
-
-            const downloadLinkDiv = document.getElementById('downloadLink');
-            downloadLinkDiv.innerHTML = '';
-            const link = document.createElement('a');
-            link.href = dataURL;
-            link.download = 'stitched_image.jpg';
-            link.textContent = 'Download Stitched Image';
-            downloadLinkDiv.appendChild(link);
-
-            images.forEach(img => URL.revokeObjectURL(img.src));
+        function syncQualityVisibility() {
+            $('qualityGroup').hidden = $('format').value === 'image/png';
         }
+
+        function saveSettings() {
+            try {
+                localStorage.setItem(SETTINGS_KEY, JSON.stringify({
+                    orientation: $('orientation').value,
+                    sizing: $('sizing').value,
+                    gap: String(Math.min(Math.max(parseInt($('gap').value, 10) || 0, 0), 1000)),
+                    bgColor: $('bgColor').value,
+                    format: $('format').value,
+                    quality: $('quality').value,
+                }));
+            } catch { /* private browsing — settings just won't persist */ }
+        }
+
+        function loadSettings() {
+            try {
+                const s = JSON.parse(localStorage.getItem(SETTINGS_KEY));
+                if (!s) return;
+                for (const id of ['orientation', 'sizing', 'gap', 'bgColor', 'format', 'quality']) {
+                    if (s[id] !== undefined) $(id).value = s[id];
+                }
+            } catch { /* ignore corrupt settings */ }
+        }
+
+        $('dropZone').addEventListener('click', () => $('fileInput').click());
+        $('fileInput').addEventListener('change', e => {
+            addFiles(e.target.files);
+            e.target.value = '';
+        });
+
+        let dragDepth = 0;
+        const hasFiles = e => e.dataTransfer && [...e.dataTransfer.types].includes('Files');
+        document.addEventListener('dragenter', e => {
+            if (hasFiles(e)) {
+                dragDepth++;
+                $('dropZone').classList.add('drag-active');
+            }
+        });
+        document.addEventListener('dragleave', () => {
+            if (--dragDepth <= 0) {
+                dragDepth = 0;
+                $('dropZone').classList.remove('drag-active');
+            }
+        });
+        document.addEventListener('dragover', e => e.preventDefault());
+        document.addEventListener('drop', e => {
+            e.preventDefault();
+            dragDepth = 0;
+            $('dropZone').classList.remove('drag-active');
+            // A reorder drag released outside the list must not re-add its image
+            if (dragIndex !== null) {
+                dragIndex = null;
+                return;
+            }
+            if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
+        });
+
+        document.addEventListener('paste', e => {
+            const files = [...((e.clipboardData && e.clipboardData.items) || [])]
+                .filter(item => item.kind === 'file' && item.type.startsWith('image/'))
+                .map(item => item.getAsFile())
+                .filter(Boolean);
+            if (files.length) {
+                e.preventDefault();
+                addFiles(files);
+            }
+        });
+
+        for (const id of ['orientation', 'sizing', 'gap', 'bgColor', 'format', 'quality']) {
+            $(id).addEventListener('input', () => {
+                if (id === 'format') syncQualityVisibility();
+                if (id === 'quality') $('qualityVal').textContent = Math.round($('quality').value * 100) + '%';
+                saveSettings();
+                scheduleStitch();
+            });
+        }
+
+        loadSettings();
+        syncQualityVisibility();
+        $('qualityVal').textContent = Math.round($('quality').value * 100) + '%';
     </script>
 </body>
 
