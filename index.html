@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>I-Combinator</title>
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0d1c">
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f5f6fb">
+    <meta name="theme-color" content="#0a0d1c">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖼️</text></svg>">
     <style>
-        /* ===== Observation Deck design tokens ===== */
+        /* ===== Observation Deck design tokens (dark only) ===== */
         :root {
-            color-scheme: dark light;
+            /* dark-only by design — native controls stay dark regardless of OS theme */
+            color-scheme: dark;
 
             /* surfaces */
             --bg: #0a0d1c;
@@ -53,28 +53,6 @@
             --radius-pill: 999px;
         }
 
-        @media (prefers-color-scheme: light) {
-            :root {
-                --bg: #f5f6fb;
-                --bg-raised: #ffffff;
-                --card: #ffffff;
-                --card-chrome: #eceef7;
-                --border: #dcdeeb;
-                --border-hover: rgba(232, 121, 43, 0.6);
-                --text: #1b1f4b;
-                --muted: #4d5378;
-                --faint: #6a7095;
-                --accent: #c95f16;
-                --accent-deep: #a84c09;
-                --tag-bg: rgba(232, 121, 43, 0.10);
-                --tag-text: #a3540e;
-                --live: #148a4d;
-                --down: #d64545;
-                --shadow: 0 10px 30px rgba(27, 31, 75, 0.10);
-                --btn-ink: #ffffff;
-            }
-        }
-
         *,
         *::before,
         *::after {
@@ -104,7 +82,8 @@
 
         ::selection {
             background: var(--accent-deep);
-            color: #fff;
+            /* dark ink, not white: #fff on this orange is only 2.92:1 */
+            color: var(--btn-ink);
         }
 
         [hidden] {
@@ -367,6 +346,14 @@
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(255, 154, 68, 0.18);
+        }
+
+        /* Popups drawn as OS chrome follow the OS, not color-scheme — without
+           this, a light-mode user gets light option text on a white menu */
+        option,
+        optgroup {
+            background-color: var(--bg-raised);
+            color: var(--text);
         }
 
         input[type="color"] {
