@@ -308,7 +308,9 @@
         }
 
         .thumb-btn:disabled {
-            opacity: 0.35;
+            /* 0.35 read as "absent" rather than "disabled" — still clearly
+               de-emphasised against the enabled state at 0.5 */
+            opacity: 0.5;
             cursor: default;
         }
 
