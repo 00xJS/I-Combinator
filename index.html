@@ -19,6 +19,11 @@
             --card: #12163a;
             --card-chrome: #0c0f26;
             --border: rgba(255, 255, 255, 0.09);
+            /* Interactive-control boundaries only. The subtle --border is
+               1.28:1 on --card, but WCAG 1.4.11 wants 3:1 for anything that
+               identifies a control. This measures 3.48:1 on --card and
+               3.60:1 on --bg-raised (the fill it sits against). */
+            --border-control: #656d96;
             --border-hover: rgba(255, 154, 68, 0.55);
 
             /* text */
@@ -195,7 +200,7 @@
             padding: 32px 16px;
             background: var(--bg-raised);
             color: var(--text);
-            border: 2px dashed var(--border);
+            border: 2px dashed var(--border-control);
             border-radius: var(--radius-card);
             transition: border-color 0.2s ease, background 0.2s ease;
         }
@@ -270,7 +275,7 @@
             border-radius: var(--radius-control);
             background: var(--bg-raised);
             color: var(--text);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-control);
         }
 
         .thumb-btn:hover {
@@ -309,7 +314,7 @@
 
         .thumb-btn:disabled:hover {
             background: var(--bg-raised);
-            border-color: var(--border);
+            border-color: var(--border-control);
             transform: none;
         }
 
@@ -339,7 +344,7 @@
             min-height: 44px;
             color: var(--text);
             background: var(--bg-raised);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-control);
             border-radius: var(--radius-control);
         }
 
